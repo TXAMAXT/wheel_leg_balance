@@ -18,9 +18,17 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "adc.h"
+#include "can.h"
+#include "crc.h"
 #include "dma.h"
+#include "i2c.h"
+#include "rng.h"
+#include "spi.h"
 #include "tim.h"
+#include "usart.h"
+#include "usb_otg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -51,6 +59,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -96,10 +105,30 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM1_Init();
   MX_TIM8_Init();
+  MX_CAN1_Init();
+  MX_CAN2_Init();
+  MX_CRC_Init();
+  MX_RNG_Init();
+  MX_I2C3_Init();
+  MX_SPI1_Init();
+  MX_TIM10_Init();
+  MX_USART3_UART_Init();
+  MX_USART1_UART_Init();
+  MX_USART6_UART_Init();
+  MX_I2C2_Init();
+  MX_USB_OTG_FS_USB_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
+  /* Call init function for freertos objects (in freertos.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -135,7 +164,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLM = 6;
   RCC_OscInitStruct.PLL.PLLN = 168;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
